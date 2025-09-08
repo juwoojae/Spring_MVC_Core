@@ -17,7 +17,6 @@ public class MemberSaveControllerV1 implements ControllerV1 {
 
     @Override
     public void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("MemberSaveServlet.service");
         String username = request.getParameter("username");
         int age = Integer.parseInt(request.getParameter("age"));
 
