@@ -27,6 +27,11 @@ public class FrontControllerServletV4 extends HttpServlet {
      * */
     private Map<String, ControllerV4> controllerMap = new HashMap<>();
 
+    /**
+     * 유연 한 컨트롤러
+     * 만약 Map<String, Controller_> ControllerMap = new hashMap<>() 으로 확장이 가능하다면
+     * 여러 컨트롤러를 갈아 끼울수 있는 adapter 를 도입
+     */
     //처음에 이 서블릿이 서블릿 컨테이너에 등록됨과 동시에 controllerMap 매핑,
     //"/front-controller/v3/*"-> URL키값으로 알맞게 매핑한뒤 해당 컨트롤러 조회
     public FrontControllerServletV4() {
