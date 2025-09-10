@@ -34,7 +34,10 @@ public class ControllerV3HandlerAdapter implements MyHandlerAdapter {
         return mv;
     }
 
-    //MemberSaveControllerV3,MemberListControllerV3 에 넘겨주는 용도
+    /**
+     * Controller 에 Model을 넘겨 주려면 request에 서블릿 컨테이너 저장소에 있는 값을
+     * Map<String,String> paramMap 이라는 형태로 바꿔주는 과정이다
+     */
     private static Map<String, String> createParamMap(HttpServletRequest request) {
         //paramMap
         Map<String, String> paramMap = new HashMap<>();

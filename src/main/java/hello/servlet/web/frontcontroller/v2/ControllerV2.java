@@ -7,6 +7,10 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+/**
+ * 서블릿과 비슷한 모양의 컨트롤러 인터페이스 의 도입
+ * 프론트 컨트롤러는 이 인터페이스를 호출해서 구현과 관계없이 로직의 일관성을 가져갈수 있다
+ */
 public interface ControllerV2 {
     //v1 에서는 Controller 마다 forward 가 있어서 Controller -> JSP 이동을 해주었다면
     //v2 에서는 Controller 가 MyView 를 반환하고, MyView 내부메서드인 render 를 호출하여 Controller ->JSP(View) 를 조회해준다

@@ -2,7 +2,6 @@ package hello.servlet.web.frontcontroller.v5;
 
 import hello.servlet.web.frontcontroller.ModelView;
 import hello.servlet.web.frontcontroller.MyView;
-import hello.servlet.web.frontcontroller.v3.ControllerV3;
 import hello.servlet.web.frontcontroller.v3.controller.MemberFormControllerV3;
 import hello.servlet.web.frontcontroller.v3.controller.MemberListControllerV3;
 import hello.servlet.web.frontcontroller.v3.controller.MemberSaveControllerV3;
@@ -10,6 +9,7 @@ import hello.servlet.web.frontcontroller.v4.controller.MemberFormControllerV4;
 import hello.servlet.web.frontcontroller.v4.controller.MemberListControllerV4;
 import hello.servlet.web.frontcontroller.v4.controller.MemberSaveControllerV4;
 import hello.servlet.web.frontcontroller.v5.adapter.ControllerV3HandlerAdapter;
+import hello.servlet.web.frontcontroller.v5.adapter.ControllerV4HandlerAdapter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -22,15 +22,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+    /**
+    * 유연 한 컨트롤러
+    * 만약 Map<String, Controller_> ControllerMap = new hashMap<>() 으로 확장이 가능하다면
+    * 여러 컨트롤러(handler) 를 갈아 끼울수 있는 handlerAdapter 를 도입
+    */
 @WebServlet(name = "frontControllerServletV5", urlPatterns = "/front-controller/v5/*")
 public class FrontControllerServletV5 extends HttpServlet {
-
     /**
-     * 1. 기존의 컨트롤러(Controller) 를 Controller 인터페이스가아닌 Object 로 받는다(handler)
-     * 2. handler 와 호환되는 handlerAdapter 를 handlerAdapters 에서 찾는다
-     * 3.
+     * 1. 기존의 컨트롤러(Controller) 를 Controller 인터페이스가아닌 Object 로 받는다(handler) (getHandler() 를 이용)
+     * 2. handler 와 호환되는 handlerAdapter 를 handlerAdapters 에서 찾는다 (getHandlerAdapter()를 이용)
+     * 3. handlerAdapter 가 handle을 호출해서 ModelView를 반환한다
+     * 4. ModelView ->ViewPath 를 꺼내온뒤 render 을 호출하여 View 를 렌더링한다
      */
-
     private final Map<String, Object> handlerMappingMap = new HashMap<>();
     private final List<MyHandlerAdapter> handlerAdapters = new ArrayList<>();
 
@@ -38,13 +42,21 @@ public class FrontControllerServletV5 extends HttpServlet {
         initHandlerMappingMap();
         initHandlerAdapters();
     }
+
     private void initHandlerMappingMap() {
         handlerMappingMap.put("/front-controller/v5/v3/members/new-form", new MemberFormControllerV3());
         handlerMappingMap.put("/front-controller/v5/v3/members/save", new MemberSaveControllerV3());
         handlerMappingMap.put("/front-controller/v5/v3/members", new MemberListControllerV3());
+
+        //v4 를 추가
+        handlerMappingMap.put("/front-controller/v5/v4/members/new-form", new MemberFormControllerV4());
+        handlerMappingMap.put("/front-controller/v5/v4/members/save", new MemberSaveControllerV4());
+        handlerMappingMap.put("/front-controller/v5/v4/members", new MemberListControllerV4());
     }
-        private void initHandlerAdapters() {
+
+    private void initHandlerAdapters() {
         handlerAdapters.add(new ControllerV3HandlerAdapter());
+        handlerAdapters.add(new ControllerV4HandlerAdapter());
     }
 
     @Override
@@ -83,3 +95,5 @@ public class FrontControllerServletV5 extends HttpServlet {
         return new MyView("/WEB-INF/views/" + viewName + ".jsp");
     }
 }
+
+

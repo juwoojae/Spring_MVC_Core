@@ -20,20 +20,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @WebServlet(name = "frontControllerServletV4", urlPatterns = "/front-controller/v4/*")
-//front-controller/v1/뒤에 어떤 URL이 들어와도 이 프론트 컨트롤러 서블릿실행
 public class FrontControllerServletV4 extends HttpServlet {
-    /*매핑 정보
-     * URL 매핑 정보에서 컨트롤러 조회
-     * */
+
     private Map<String, ControllerV4> controllerMap = new HashMap<>();
 
-    /**
-     * 유연 한 컨트롤러
-     * 만약 Map<String, Controller_> ControllerMap = new hashMap<>() 으로 확장이 가능하다면
-     * 여러 컨트롤러를 갈아 끼울수 있는 adapter 를 도입
-     */
-    //처음에 이 서블릿이 서블릿 컨테이너에 등록됨과 동시에 controllerMap 매핑,
-    //"/front-controller/v3/*"-> URL키값으로 알맞게 매핑한뒤 해당 컨트롤러 조회
     public FrontControllerServletV4() {
         controllerMap.put("/front-controller/v4/members/new-form", new MemberFormControllerV4());
         controllerMap.put("/front-controller/v4/members/save", new MemberSaveControllerV4());
@@ -42,9 +32,8 @@ public class FrontControllerServletV4 extends HttpServlet {
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String requestURI = request.getRequestURI();//클라이언트의 요청 URI 꺼내기
+        String requestURI = request.getRequestURI();
 
-        //클라이언트 요청 오류
         ControllerV4 controller = controllerMap.get(requestURI);
         if (controller == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND); //404
@@ -57,7 +46,6 @@ public class FrontControllerServletV4 extends HttpServlet {
         MyView view = viewResolver(viewName);
         view.render(model,request,response);
     }
-    //컨트롤러가 반환한 논리 뷰 이름을 실제 물리 뷰 경로로 변경한다. 그리고 실제 물리 경로가 있는 MyView 객체를 반환한다
 
     private MyView viewResolver(String viewName) {
         return new MyView("/WEB-INF/views/" + viewName +".jsp");
@@ -66,8 +54,6 @@ public class FrontControllerServletV4 extends HttpServlet {
     private static Map<String, String> createParamMap(HttpServletRequest request) {
         //paramMap
         Map<String,String> paramMap = new HashMap<>();
-        //모든 ParamerterName 을 다 가져온다
-        // (paramName,request.getParameter(ParamName)) key ,value 로 paramMap 에 추가
         request.getParameterNames().asIterator()
                 .forEachRemaining(paramName -> paramMap.put(paramName, request.getParameter(paramName)));
         return paramMap;
